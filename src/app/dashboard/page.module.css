@@ -1,0 +1,337 @@
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ─── Header ─── */
+.header {
+  margin-bottom: var(--space-xl);
+  animation: slideUp 0.5s ease-out;
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: var(--space-xs);
+}
+
+/* ─── Top Grid ─── */
+.topGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  animation: slideUp 0.6s ease-out;
+}
+
+/* ─── Days Remaining Card ─── */
+.daysCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  text-align: center;
+}
+
+.ringWrapper {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+.ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ringProgress {
+  transition: stroke-dashoffset 1s ease-out;
+}
+
+.ringContent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.daysNumber {
+  font-size: 3.5rem;
+  font-weight: 900;
+  line-height: 1;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: countPulse 3s ease-in-out infinite;
+}
+
+.daysLabel {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.cardFooter {
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+  margin-top: var(--space-md);
+}
+
+/* ─── Lives Card ─── */
+.livesCard {
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.cardTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.livesNumber {
+  font-size: 3.5rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.livesMax {
+  font-size: 1.2rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.livesGreen { color: var(--accent-emerald); }
+.livesYellow { color: var(--accent-amber); }
+.livesRed { color: var(--accent-rose); }
+
+.livesBar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.livesBarFill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 1s ease-out;
+}
+
+.barGreen { background: var(--gradient-success); }
+.barYellow { background: var(--gradient-gold); }
+.barRed { background: var(--gradient-danger); }
+
+.livesHint {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+/* ─── Stats Column ─── */
+.statsColumn {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+}
+
+.statIcon {
+  font-size: 1.5rem;
+}
+
+.statValue {
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.statLabel {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+/* ─── Calendar Heatmap ─── */
+.calendarCard {
+  padding: var(--space-xl);
+  margin-bottom: var(--space-xl);
+  animation: slideUp 0.7s ease-out;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 16px);
+  gap: 3px;
+  margin-top: var(--space-md);
+  justify-content: center;
+}
+
+.calDay {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  transition: all var(--transition-fast);
+  position: relative;
+  cursor: default;
+}
+
+.calDay:hover {
+  transform: scale(1.5);
+  z-index: 2;
+}
+
+.dayStudied { background: var(--accent-emerald); opacity: 0.85; }
+.dayDouble { background: var(--accent-gold); opacity: 0.9; box-shadow: 0 0 6px rgba(251,191,36,0.4); }
+.dayMissed { background: var(--accent-rose); opacity: 0.6; }
+.dayFuture { background: rgba(255,255,255,0.06); }
+.dayToday {
+  background: var(--accent-purple);
+  box-shadow: 0 0 8px rgba(139,92,246,0.5);
+  animation: glow 2s ease-in-out infinite;
+}
+
+.todayDot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+}
+
+.calendarLegend {
+  display: flex;
+  gap: var(--space-lg);
+  margin-top: var(--space-md);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  flex-wrap: wrap;
+}
+
+.calendarLegend span {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.legendDot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* ─── Quick Actions ─── */
+.quickActions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  animation: slideUp 0.8s ease-out;
+}
+
+.actionCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-xl);
+  text-align: center;
+  cursor: pointer;
+}
+
+.actionCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-glow-purple);
+}
+
+.actionIcon {
+  font-size: 2rem;
+}
+
+.actionLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* ─── Skeletons ─── */
+.skeletonTitle {
+  width: 300px;
+  height: 36px;
+}
+
+.skeletonSub {
+  width: 400px;
+  height: 18px;
+  margin-top: var(--space-sm);
+}
+
+.skeletonCard {
+  height: 250px;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .topGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .statsColumn {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .topGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .quickActions {
+    grid-template-columns: 1fr;
+  }
+
+  .calendarGrid {
+    grid-template-columns: repeat(auto-fill, 12px);
+    gap: 2px;
+  }
+
+  .calDay {
+    width: 11px;
+    height: 11px;
+  }
+
+  .statsColumn {
+    grid-template-columns: 1fr 1fr;
+  }
+}

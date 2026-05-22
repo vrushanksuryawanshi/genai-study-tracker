@@ -1,0 +1,267 @@
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: var(--space-lg);
+  animation: slideUp 0.5s ease-out;
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: var(--space-xs);
+}
+
+/* ─── Layout ─── */
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: var(--space-lg);
+  animation: slideUp 0.55s ease-out;
+}
+
+/* ─── Date Sidebar ─── */
+.dateSidebar {
+  padding: var(--space-md);
+  max-height: 70vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebarTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+  padding: 0 var(--space-sm);
+}
+
+.dateList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.dateItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+  text-align: left;
+  width: 100%;
+  position: relative;
+}
+
+.dateItem:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--text-primary);
+}
+
+.dateActive {
+  background: var(--accent-purple-dim) !important;
+  color: var(--accent-purple) !important;
+}
+
+.dateHasEntry {
+  color: var(--text-secondary);
+}
+
+.dateLabel {
+  flex: 1;
+}
+
+.dateHours {
+  font-size: 0.65rem;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: var(--accent-emerald-dim);
+  color: var(--accent-emerald);
+  font-weight: 600;
+}
+
+.dateDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-purple);
+  flex-shrink: 0;
+}
+
+.noDates {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  padding: var(--space-md);
+  text-align: center;
+}
+
+/* ─── Editor Area ─── */
+.editorArea {
+  min-width: 0;
+}
+
+.editorCard {
+  padding: var(--space-xl);
+}
+
+.editorHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-lg);
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.editorDate {
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.todayBadge {
+  font-size: 0.6rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: var(--accent-purple-dim);
+  color: var(--accent-purple);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.datePicker {
+  margin-top: var(--space-xs);
+  padding: 4px var(--space-sm);
+  background: var(--bg-input);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.datePicker::-webkit-calendar-picker-indicator {
+  filter: invert(0.7);
+}
+
+.editorMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.hoursInput {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.hoursLabel {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.hoursField {
+  width: 70px;
+  text-align: center;
+  padding: var(--space-xs) var(--space-sm);
+  font-weight: 600;
+}
+
+/* ─── Save Indicator ─── */
+.saveIndicator {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-base);
+  white-space: nowrap;
+  min-height: 24px;
+}
+
+.saving { color: var(--accent-amber); background: var(--accent-amber-dim); }
+.saved { color: var(--accent-emerald); background: var(--accent-emerald-dim); }
+.error { color: var(--accent-rose); background: var(--accent-rose-dim); }
+.typing { color: var(--text-tertiary); background: rgba(255,255,255,0.03); }
+
+/* ─── Editor ─── */
+.editor {
+  width: 100%;
+  min-height: 400px;
+  padding: var(--space-lg);
+  background: rgba(0,0,0,0.2);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  resize: vertical;
+  outline: none;
+  transition: box-shadow var(--transition-base);
+}
+
+.editor:focus {
+  box-shadow: inset 0 0 0 1px var(--accent-purple-dim);
+}
+
+.editor::placeholder {
+  color: var(--text-muted);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .dateSidebar {
+    max-height: 200px;
+  }
+
+  .dateList {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: var(--space-xs);
+  }
+
+  .dateItem {
+    flex-direction: column;
+    min-width: 70px;
+    text-align: center;
+    padding: var(--space-xs);
+    font-size: 0.7rem;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .editor {
+    min-height: 250px;
+  }
+
+  .editorHeader {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,378 @@
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-lg);
+  animation: slideUp 0.5s ease-out;
+  gap: var(--space-md);
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: var(--space-xs);
+}
+
+.addBtn {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ─── Stats Bar ─── */
+.statsBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-md) var(--space-xl);
+  margin-bottom: var(--space-lg);
+  animation: slideUp 0.55s ease-out;
+}
+
+.statsText {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.statsHighlight {
+  font-weight: 800;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+}
+
+.progressBar {
+  flex: 1;
+  height: 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--gradient-success);
+  border-radius: var(--radius-full);
+  transition: width 0.8s ease-out;
+}
+
+/* ─── Form ─── */
+.formCard {
+  padding: var(--space-xl);
+  margin-bottom: var(--space-lg);
+  animation: slideDown 0.3s ease-out;
+}
+
+.formTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.formLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 20px;
+  padding-right: 40px;
+}
+
+.select option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* ─── Preset Logos ─── */
+.presetSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.presetGrid {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.presetItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-sm);
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  width: 60px;
+}
+
+.presetItem:hover {
+  background: rgba(255,255,255,0.06);
+  border-color: var(--border-glass-hover);
+}
+
+.presetSelected {
+  border-color: var(--accent-purple) !important;
+  background: var(--accent-purple-dim) !important;
+}
+
+.presetImg {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.presetName {
+  font-size: 0.5rem;
+  color: var(--text-tertiary);
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* ─── Filter Tabs ─── */
+.filterTabs {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  animation: slideUp 0.6s ease-out;
+}
+
+.filterTab {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid transparent;
+  transition: all var(--transition-base);
+}
+
+.filterTab:hover {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.06);
+}
+
+.filterActive {
+  color: var(--accent-purple);
+  background: var(--accent-purple-dim);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+/* ─── Tools Grid ─── */
+.toolsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+.toolCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-xl) var(--space-md);
+  gap: var(--space-sm);
+  animation: slideUp 0.5s ease-out backwards;
+  transition: all var(--transition-base);
+}
+
+.toolCovered {
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.toolCovered:hover {
+  box-shadow: var(--shadow-glow-emerald);
+}
+
+.deleteBtn {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  opacity: 0;
+}
+
+.toolCard:hover .deleteBtn {
+  opacity: 1;
+}
+
+.deleteBtn:hover {
+  background: var(--accent-rose-dim);
+  color: var(--accent-rose);
+}
+
+.toolLogo {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.03);
+  padding: var(--space-sm);
+}
+
+.logoImg {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.logoFallback {
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolName {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.toolCategory {
+  font-size: 0.65rem;
+  padding: 2px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--accent-purple);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statusToggle {
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: all var(--transition-base);
+  margin-top: var(--space-xs);
+}
+
+.statusCovered {
+  background: var(--accent-emerald-dim);
+  color: var(--accent-emerald);
+}
+
+.statusCovered:hover {
+  background: rgba(16, 185, 129, 0.25);
+}
+
+.statusRemaining {
+  background: rgba(255,255,255,0.05);
+  color: var(--text-tertiary);
+}
+
+.statusRemaining:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--text-primary);
+}
+
+/* ─── Empty State ─── */
+.emptyState {
+  text-align: center;
+  padding: var(--space-3xl);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: var(--space-md);
+}
+
+.emptyText {
+  color: var(--text-tertiary);
+  font-size: 0.9rem;
+}
+
+/* ─── Skeleton ─── */
+.toolSkeleton {
+  height: 200px;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .toolsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+
+  .toolsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .filterTabs {
+    flex-wrap: wrap;
+  }
+
+  .statsBar {
+    flex-direction: column;
+    text-align: center;
+  }
+}

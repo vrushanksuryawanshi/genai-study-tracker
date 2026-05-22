@@ -1,0 +1,127 @@
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-lg);
+  animation: slideUp 0.5s ease-out;
+  gap: var(--space-md);
+}
+
+.headerLeft {
+  flex: 1;
+}
+
+.title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: var(--space-xs);
+}
+
+/* ─── Save Indicator ─── */
+.saveIndicator {
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: var(--space-xs) var(--space-md);
+  border-radius: var(--radius-full);
+  transition: all var(--transition-base);
+  white-space: nowrap;
+  min-height: 28px;
+}
+
+.saving {
+  color: var(--accent-amber);
+  background: var(--accent-amber-dim);
+}
+
+.saved {
+  color: var(--accent-emerald);
+  background: var(--accent-emerald-dim);
+}
+
+.error {
+  color: var(--accent-rose);
+  background: var(--accent-rose-dim);
+}
+
+.typing {
+  color: var(--text-tertiary);
+  background: rgba(255,255,255,0.03);
+}
+
+/* ─── Editor ─── */
+.editorCard {
+  padding: 4px;
+  animation: slideUp 0.6s ease-out;
+}
+
+.editor {
+  width: 100%;
+  min-height: 500px;
+  padding: var(--space-xl);
+  background: rgba(0,0,0,0.2);
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  resize: vertical;
+  outline: none;
+  transition: box-shadow var(--transition-base);
+}
+
+.editor:focus {
+  box-shadow: inset 0 0 0 1px var(--accent-purple-dim);
+}
+
+.editor::placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.editorSkeleton {
+  height: 500px;
+  width: 100%;
+}
+
+/* ─── Footer ─── */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-md);
+  animation: fadeIn 0.7s ease-out;
+}
+
+.charCount,
+.lastUpdated {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .editor {
+    min-height: 350px;
+    font-size: 0.85rem;
+    padding: var(--space-md);
+  }
+}
