@@ -6,9 +6,16 @@ import styles from './page.module.css';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
+// Get local YYYY-MM-DD string (timezone-safe)
+function getLocalDateStr(date = new Date()) {
+  const offset = date.getTimezoneOffset();
+  const local = new Date(date.getTime() - offset * 60000);
+  return local.toISOString().split('T')[0];
+}
+
 export default function DiaryPage() {
   const [entries, setEntries] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(getLocalDateStr());
   const [content, setContent] = useState('');
   const [hoursStudied, setHoursStudied] = useState(0);
   const [saveStatus, setSaveStatus] = useState('');
@@ -120,14 +127,15 @@ export default function DiaryPage() {
   };
 
   // Generate dates from May 23, 2026 to today (or end of timeline)
-  const startDate = new Date('2026-05-23');
-  const today = new Date();
-  const endDate = new Date(Math.min(today.getTime(), new Date('2026-12-08').getTime()));
+  const todayStr = getLocalDateStr();
+  const startDate = new Date('2026-05-23T00:00:00');
+  const todayLocal = new Date(todayStr + 'T00:00:00');
+  const endDate = new Date(Math.min(todayLocal.getTime(), new Date('2026-12-08T00:00:00').getTime()));
 
   const dateList = [];
   const d = new Date(endDate);
   while (d >= startDate) {
-    dateList.push(d.toISOString().split('T')[0]);
+    dateList.push(getLocalDateStr(d));
     d.setDate(d.getDate() - 1);
   }
 
@@ -139,7 +147,7 @@ export default function DiaryPage() {
     return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
   };
 
-  const isToday = selectedDate === new Date().toISOString().split('T')[0];
+  const isToday = selectedDate === todayStr;
 
   return (
     <ProtectedLayout activePage="diary">
