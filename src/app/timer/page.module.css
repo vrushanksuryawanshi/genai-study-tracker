@@ -2,11 +2,12 @@
   max-width: 1000px;
   margin: 0 auto;
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .header {
   margin-bottom: var(--space-xl);
-  animation: slideUp 0.5s ease-out;
 }
 
 .title {
@@ -27,7 +28,6 @@
   grid-template-columns: 1fr 1fr;
   gap: var(--space-lg);
   margin-bottom: var(--space-xl);
-  animation: slideUp 0.55s ease-out;
 }
 
 .timerBlock {
@@ -69,7 +69,7 @@
   font-size: 0.65rem;
   padding: 2px 8px;
   border-radius: var(--radius-full);
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.04);
   color: var(--text-muted);
   font-weight: 500;
 }
@@ -198,14 +198,13 @@
 }
 
 .goldBtn:hover {
-  box-shadow: 0 0 20px rgba(251,191,36,0.4);
+  box-shadow: 0 0 20px rgba(251,191,36,0.3);
 }
 
 /* ─── Sessions Card ─── */
 .sessionsCard {
   padding: var(--space-xl);
   text-align: left;
-  animation: slideUp 0.7s ease-out;
 }
 
 .sessionsTitle {
@@ -232,7 +231,7 @@
   align-items: center;
   gap: var(--space-md);
   padding: var(--space-sm) var(--space-md);
-  background: rgba(255,255,255,0.03);
+  background: rgba(255,255,255,0.02);
   border-radius: var(--radius-sm);
 }
 
@@ -249,7 +248,7 @@
   margin-left: auto;
   padding: 2px 8px;
   border-radius: var(--radius-full);
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.04);
 }
 
 /* ─── Responsive ─── */

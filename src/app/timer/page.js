@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import ProtectedLayout from '@/components/ProtectedLayout';
 import styles from './page.module.css';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 
 const THREE_HOURS = 3 * 60 * 60;
 
@@ -20,10 +22,41 @@ export default function TimerPage() {
   const [showBonusCelebration, setShowBonusCelebration] = useState(false);
   const [bonusUnlocked, setBonusUnlocked] = useState(false);
 
+  // Turbo timer state
+  const [turboSecondsLeft, setTurboSecondsLeft] = useState(THREE_HOURS);
+  const [turboRunning, setTurboRunning] = useState(false);
+  const [turboCompleted, setTurboCompleted] = useState(false);
+  const [showTurboCelebration, setShowTurboCelebration] = useState(false);
+  const [stats, setStats] = useState(null);
+  const [todaysSessions, setTodaysSessions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const containerRef = useRef(null);
+
+  useGSAP(() => {
+    if (!loading) {
+      const tl = gsap.timeline();
+      
+      tl.fromTo(`.${styles.header}`, 
+        { y: -30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }
+      )
+      .fromTo(`.${styles.timerBlock}`, 
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: "power2.out" }, 
+        "-=0.4"
+      )
+      .fromTo(`.${styles.sessionsCard}`, 
+        { scale: 0.95, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: "power2.out" }, 
+        "-=0.3"
+      );
+    }
+  }, { dependencies: [loading], scope: containerRef });
   const [todaySessions, setTodaySessions] = useState([]);
   const [logging, setLogging] = useState(false);
   const intervalRef = useRef(null);
   const bonusIntervalRef = useRef(null);
+  const turboIntervalRef = useRef(null);
 
   // Load timer state from localStorage
   useEffect(() => {
@@ -58,6 +91,17 @@ export default function TimerPage() {
           setBonusSecondsLeft(state.bonusSecondsLeft);
           setBonusUnlocked(true);
         }
+
+        // Restore turbo timer
+        if (state.turboCompleted) {
+          setTurboCompleted(true);
+          setTurboSecondsLeft(0);
+        } else if (state.turboRunning && state.turboSecondsLeft - elapsed > 0) {
+          setTurboSecondsLeft(state.turboSecondsLeft - elapsed);
+          setTurboRunning(true);
+        } else if (state.bonusUnlocked && state.turboSecondsLeft > 0) {
+          setTurboSecondsLeft(state.turboSecondsLeft);
+        }
       } catch (e) { /* ignore */ }
     }
     fetchTodaySessions();
@@ -68,9 +112,10 @@ export default function TimerPage() {
     localStorage.setItem('timerStateV2', JSON.stringify({
       secondsLeft, isRunning, isCompleted,
       bonusSecondsLeft, bonusRunning, bonusCompleted, bonusUnlocked,
+      turboSecondsLeft, turboRunning, turboCompleted,
       savedAt: Date.now(),
     }));
-  }, [secondsLeft, isRunning, isCompleted, bonusSecondsLeft, bonusRunning, bonusCompleted, bonusUnlocked]);
+  }, [secondsLeft, isRunning, isCompleted, bonusSecondsLeft, bonusRunning, bonusCompleted, bonusUnlocked, turboSecondsLeft, turboRunning, turboCompleted]);
 
   // Main timer interval
   useEffect(() => {
@@ -83,7 +128,7 @@ export default function TimerPage() {
             setIsCompleted(true);
             setBonusUnlocked(true);
             setShowCelebration(true);
-            logSession(false);
+            logSession(false, false);
             setTimeout(() => setShowCelebration(false), 4000);
             return 0;
           }
@@ -104,7 +149,7 @@ export default function TimerPage() {
             setBonusRunning(false);
             setBonusCompleted(true);
             setShowBonusCelebration(true);
-            logSession(true);
+            logSession(true, false);
             setTimeout(() => setShowBonusCelebration(false), 4000);
             return 0;
           }
@@ -114,6 +159,27 @@ export default function TimerPage() {
     }
     return () => clearInterval(bonusIntervalRef.current);
   }, [bonusRunning]);
+
+  // Turbo timer interval
+  useEffect(() => {
+    if (turboRunning && turboSecondsLeft > 0) {
+      turboIntervalRef.current = setInterval(() => {
+        setTurboSecondsLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(turboIntervalRef.current);
+            setTurboRunning(false);
+            setTurboCompleted(true);
+            setShowTurboCelebration(true);
+            logSession(false, true);
+            setTimeout(() => setShowTurboCelebration(false), 4000);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(turboIntervalRef.current);
+  }, [turboRunning]);
 
   const fetchTodaySessions = async () => {
     try {
@@ -127,7 +193,7 @@ export default function TimerPage() {
     } catch (e) { /* ignore */ }
   };
 
-  const logSession = async (isDouble) => {
+  const logSession = async (isDouble, isTurbo) => {
     setLogging(true);
     try {
       const today = new Date().toISOString().split('T')[0];
@@ -138,6 +204,7 @@ export default function TimerPage() {
           date: today,
           duration_seconds: THREE_HOURS,
           is_double_credit: isDouble,
+          is_turbo_credit: isTurbo,
         }),
       });
       fetchTodaySessions();
@@ -157,16 +224,24 @@ export default function TimerPage() {
     setBonusUnlocked(false);
     setBonusRunning(false);
     setBonusCompleted(false);
+    setTurboRunning(false);
+    setTurboCompleted(false);
     clearInterval(intervalRef.current);
     clearInterval(bonusIntervalRef.current);
+    clearInterval(turboIntervalRef.current);
     setSecondsLeft(THREE_HOURS);
     setBonusSecondsLeft(THREE_HOURS);
+    setTurboSecondsLeft(THREE_HOURS);
     localStorage.removeItem('timerStateV2');
   };
 
   // Bonus timer controls
   const handleBonusStart = () => setBonusRunning(true);
   const handleBonusPause = () => { setBonusRunning(false); clearInterval(bonusIntervalRef.current); };
+
+  // Turbo timer controls
+  const handleTurboStart = () => setTurboRunning(true);
+  const handleTurboPause = () => { setTurboRunning(false); clearInterval(turboIntervalRef.current); };
 
   // Format time
   const formatTime = (s) => {
@@ -190,9 +265,12 @@ export default function TimerPage() {
   const bonusProgress = ((THREE_HOURS - bonusSecondsLeft) / THREE_HOURS) * 100;
   const bonusOffset = ringCircumference - (bonusProgress / 100) * ringCircumference;
 
+  const turboProgress = ((THREE_HOURS - turboSecondsLeft) / THREE_HOURS) * 100;
+  const turboOffset = ringCircumference - (turboProgress / 100) * ringCircumference;
+
   return (
     <ProtectedLayout activePage="timer">
-      <div className={styles.page}>
+      <div className={styles.page} ref={containerRef}>
         <div className={styles.header}>
           <h1 className={styles.title}>
             <span className="gradient-text">Study Timer</span>
@@ -296,6 +374,53 @@ export default function TimerPage() {
               )}
             </div>
           </div>
+
+          {/* ─── Turbo 3-Hour Timer ─── */}
+          <div className={`glass-card ${styles.timerBlock} ${!bonusUnlocked ? styles.locked : ''}`}>
+            <h3 className={styles.timerLabel}>
+              🚀 Turbo Session
+              {!bonusUnlocked && <span className={styles.badgeLocked}>🔒 Complete mandatory first</span>}
+              {turboCompleted && <span className={styles.badgeGold}>🚀 +2 Lives Recovered!</span>}
+            </h3>
+            <div className={styles.timerWrapper}>
+              {showTurboCelebration && (
+                <>
+                  <div className={styles.burst1Gold} />
+                  <div className={styles.burst2Gold} />
+                </>
+              )}
+              <svg className={styles.timerRing} viewBox="0 0 300 300">
+                <circle cx="150" cy="150" r={ringRadius} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="10" />
+                <circle
+                  cx="150" cy="150" r={ringRadius} fill="none"
+                  stroke={turboCompleted ? '#3b82f6' : '#60a5fa'}
+                  strokeWidth="10" strokeLinecap="round"
+                  strokeDasharray={ringCircumference}
+                  strokeDashoffset={turboOffset}
+                  className={styles.timerRingProgress}
+                  style={{ filter: 'drop-shadow(0 0 8px rgba(59,130,246,0.3))' }}
+                />
+              </svg>
+              <div className={styles.timerDisplay}>
+                <span className={styles.time} style={{ color: turboCompleted ? '#3b82f6' : undefined }}>
+                  {formatTime(turboSecondsLeft)}
+                </span>
+                {turboCompleted && <span className={styles.completedLabelGold}>Lives Recovered! 🎉</span>}
+              </div>
+            </div>
+            <div className={styles.controls}>
+              {bonusUnlocked && !turboRunning && !turboCompleted && (
+                <button onClick={handleTurboStart} className={`btn-primary ${styles.ctrlBtn} ${styles.goldBtn}`} style={{background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', borderColor: '#3b82f6'}}>
+                  🚀 {turboSecondsLeft < THREE_HOURS ? 'Resume Turbo' : 'Start Turbo'}
+                </button>
+              )}
+              {turboRunning && (
+                <button onClick={handleTurboPause} className={`btn-secondary ${styles.ctrlBtn}`}>
+                  ⏸ Pause
+                </button>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Today's Sessions */}
@@ -307,12 +432,12 @@ export default function TimerPage() {
             <div className={styles.sessionsList}>
               {todaySessions.map((s, idx) => (
                 <div key={s.id || idx} className={styles.sessionItem}>
-                  <span className={styles.sessionIcon}>{s.is_double_credit ? '⭐' : '✅'}</span>
+                  <span className={styles.sessionIcon}>{s.is_turbo_credit ? '🚀' : s.is_double_credit ? '⭐' : '✅'}</span>
                   <span className={styles.sessionDuration}>
                     {(s.duration_seconds / 3600).toFixed(1)} hours
                   </span>
                   <span className={styles.sessionType}>
-                    {s.is_double_credit ? 'Bonus — Life Recovered' : 'Mandatory'}
+                    {s.is_turbo_credit ? 'Turbo — 2 Lives Recovered' : s.is_double_credit ? 'Bonus — Life Recovered' : 'Mandatory'}
                   </span>
                 </div>
               ))}

@@ -13,24 +13,20 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { data: project, error } = await supabase
+  const { data: projects, error } = await supabase
     .from("projects")
     .select("*")
     .eq("user_id", user.id)
-    .single();
+    .order("updated_at", { ascending: false });
 
   if (error) {
-    // If no project row exists yet, return empty content
-    if (error.code === "PGRST116") {
-      return NextResponse.json({ project: { content: "", updated_at: null } });
-    }
     return NextResponse.json(
-      { error: "Failed to fetch project" },
+      { error: "Failed to fetch projects" },
       { status: 500 }
     );
   }
 
-  return NextResponse.json({ project });
+  return NextResponse.json({ projects });
 }
 
 export async function POST(request) {
@@ -52,7 +48,7 @@ export async function POST(request) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { content } = body;
+  const { id, content, title } = body;
 
   if (content === undefined) {
     return NextResponse.json(
@@ -61,24 +57,19 @@ export async function POST(request) {
     );
   }
 
-  // Upsert: update if exists, insert if not
-  const { data: existing } = await supabase
-    .from("projects")
-    .select("id")
-    .eq("user_id", user.id)
-    .single();
-
   let data;
   let error;
 
-  if (existing) {
+  if (id) {
     // Update existing project
     const result = await supabase
       .from("projects")
       .update({
         content,
+        title: title || 'Untitled Project',
         updated_at: new Date().toISOString(),
       })
+      .eq("id", id)
       .eq("user_id", user.id)
       .select()
       .single();
@@ -92,6 +83,7 @@ export async function POST(request) {
       .insert({
         user_id: user.id,
         content,
+        title: title || 'Untitled Project',
         updated_at: new Date().toISOString(),
       })
       .select()

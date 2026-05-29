@@ -46,6 +46,7 @@ export async function GET() {
   const totalDaysStudied = uniqueDates.size;
 
   const doubleCreditDays = sessions.filter((s) => s.is_double_credit).length;
+  const turboCreditDays = sessions.filter((s) => s.is_turbo_credit).length;
 
   const totalSeconds = sessions.reduce(
     (sum, s) => sum + (s.duration_seconds || 0),
@@ -63,7 +64,10 @@ export async function GET() {
   if (today >= startDate) {
     const current = new Date(startDate);
     while (current < today) {
-      const dateStr = current.toISOString().split("T")[0];
+      const year = current.getFullYear();
+      const month = String(current.getMonth() + 1).padStart(2, '0');
+      const day = String(current.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
       if (!uniqueDates.has(dateStr)) {
         livesUsed++;
       }
@@ -71,10 +75,11 @@ export async function GET() {
     }
   }
 
-  const livesRemaining = Math.min(
-    Math.max(settings.max_lives - livesUsed + doubleCreditDays, 0),
-    settings.max_lives
-  );
+  const totalLivesCalculated = settings.max_lives - livesUsed + doubleCreditDays + (turboCreditDays * 2);
+  const totalLivesPositive = Math.max(totalLivesCalculated, 0);
+  
+  const livesRemaining = Math.min(totalLivesPositive, settings.max_lives);
+  const overcharge = Math.max(totalLivesPositive - settings.max_lives, 0);
 
   // Calculate current streak: consecutive days ending today or yesterday
   let currentStreak = 0;
@@ -90,7 +95,11 @@ export async function GET() {
     if (sortedDates[0] === todayStr || sortedDates[0] === yesterdayStr) {
       let checkDate = new Date(sortedDates[0]);
       for (const dateStr of sortedDates) {
-        const checkStr = checkDate.toISOString().split("T")[0];
+        const checkYear = checkDate.getFullYear();
+        const checkMonth = String(checkDate.getMonth() + 1).padStart(2, '0');
+        const checkDay = String(checkDate.getDate()).padStart(2, '0');
+        const checkStr = `${checkYear}-${checkMonth}-${checkDay}`;
+        
         if (dateStr === checkStr) {
           currentStreak++;
           checkDate.setDate(checkDate.getDate() - 1);
@@ -106,8 +115,10 @@ export async function GET() {
     stats: {
       totalDaysStudied,
       doubleCreditDays,
+      turboCreditDays,
       livesUsed,
       livesRemaining,
+      overcharge,
       totalHours,
       currentStreak,
       startDate: settings.start_date,
@@ -136,7 +147,7 @@ export async function POST(request) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { date, duration_seconds, is_double_credit } = body;
+  const { date, duration_seconds, is_double_credit, is_turbo_credit } = body;
 
   if (!date) {
     return NextResponse.json(
@@ -152,6 +163,7 @@ export async function POST(request) {
       date,
       duration_seconds: duration_seconds ?? 10800,
       is_double_credit: is_double_credit ?? false,
+      is_turbo_credit: is_turbo_credit ?? false,
     })
     .select()
     .single();

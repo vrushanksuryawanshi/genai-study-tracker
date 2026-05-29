@@ -1,0 +1,2 @@
+ALTER TABLE tools
+ADD COLUMN hours_required NUMERIC DEFAULT 0;

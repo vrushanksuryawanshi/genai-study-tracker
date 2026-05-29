@@ -1,11 +1,12 @@
 .page {
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .header {
   margin-bottom: var(--space-lg);
-  animation: slideUp 0.5s ease-out;
 }
 
 .title {
@@ -25,7 +26,6 @@
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: var(--space-lg);
-  animation: slideUp 0.55s ease-out;
 }
 
 /* ─── Date Sidebar ─── */
@@ -68,7 +68,7 @@
 }
 
 .dateItem:hover {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.04);
   color: var(--text-primary);
 }
 
@@ -208,7 +208,7 @@
   width: 100%;
   min-height: 400px;
   padding: var(--space-lg);
-  background: rgba(0,0,0,0.2);
+  background: rgba(0,0,0,0.15);
   border: none;
   border-radius: var(--radius-md);
   color: var(--text-primary);

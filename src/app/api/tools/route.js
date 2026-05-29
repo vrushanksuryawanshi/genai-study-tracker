@@ -48,7 +48,7 @@ export async function POST(request) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { name, category, status, logo_url } = body;
+  const { name, category, status, logo_url, hours_required } = body;
 
   if (!name || !name.trim()) {
     return NextResponse.json(
@@ -65,6 +65,7 @@ export async function POST(request) {
       category: category || "General",
       status: status || "remaining",
       logo_url: logo_url || "",
+      hours_required: hours_required || 0,
     })
     .select()
     .single();

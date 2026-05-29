@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import ProtectedLayout from '@/components/ProtectedLayout';
 import styles from './page.module.css';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 
 export default function DiaryPage() {
   const [entries, setEntries] = useState([]);
@@ -12,6 +14,28 @@ export default function DiaryPage() {
   const [saveStatus, setSaveStatus] = useState('');
   const [loading, setLoading] = useState(true);
   const debounceRef = useRef(null);
+  const containerRef = useRef(null);
+
+  useGSAP(() => {
+    if (!loading) {
+      const tl = gsap.timeline();
+      
+      tl.fromTo(`.${styles.header}`, 
+        { y: -20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" }
+      )
+      .fromTo(`.${styles.dateItem}`, 
+        { x: -20, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.4, stagger: 0.05, ease: "power2.out" }, 
+        "-=0.2"
+      )
+      .fromTo(`.${styles.editorCard}`, 
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" }, 
+        "-=0.4"
+      );
+    }
+  }, { dependencies: [loading], scope: containerRef });
 
   useEffect(() => {
     fetchAllEntries();
@@ -119,7 +143,7 @@ export default function DiaryPage() {
 
   return (
     <ProtectedLayout activePage="diary">
-      <div className={styles.page}>
+      <div className={styles.page} ref={containerRef}>
         <div className={styles.header}>
           <h1 className={styles.title}>
             <span className="gradient-text">Study Diary</span>

@@ -1,6 +1,8 @@
 .page {
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .header {
@@ -8,7 +10,6 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: var(--space-lg);
-  animation: slideUp 0.5s ease-out;
   gap: var(--space-md);
 }
 
@@ -59,19 +60,107 @@
   background: rgba(255,255,255,0.03);
 }
 
+/* ─── Layout ─── */
+.layout {
+  display: flex;
+  gap: var(--space-lg);
+}
+
+/* ─── Sidebar ─── */
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.newBtn {
+  width: 100%;
+}
+
+.projectList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.projectItem {
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.02);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-align: left;
+  border: 1px solid rgba(255,255,255,0.04);
+  color: var(--text-primary);
+}
+
+.projectItem:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+.projectItem.active {
+  background: var(--accent-purple-dim);
+  border-color: rgba(167, 139, 250, 0.2);
+}
+
+.projectTitle {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.projectDate {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
 /* ─── Editor ─── */
+.editorContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .editorCard {
   padding: 4px;
-  animation: slideUp 0.6s ease-out;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.titleInput {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-md);
+  outline: none;
+  transition: all var(--transition-base);
+}
+
+.titleInput:focus {
+  border-color: var(--accent-purple);
 }
 
 .editor {
   width: 100%;
   min-height: 500px;
-  padding: var(--space-xl);
-  background: rgba(0,0,0,0.2);
+  flex: 1;
+  padding: var(--space-md) var(--space-xl) var(--space-xl);
+  background: rgba(0,0,0,0.15);
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
   color: var(--text-primary);
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
   font-size: 0.9rem;
@@ -100,7 +189,6 @@
   display: flex;
   justify-content: space-between;
   margin-top: var(--space-md);
-  animation: fadeIn 0.7s ease-out;
 }
 
 .charCount,
@@ -111,6 +199,14 @@
 
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+  }
+
   .header {
     flex-direction: column;
   }

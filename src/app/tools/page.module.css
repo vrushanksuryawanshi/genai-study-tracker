@@ -1,6 +1,8 @@
 .page {
   max-width: 1100px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .header {
@@ -8,7 +10,6 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: var(--space-lg);
-  animation: slideUp 0.5s ease-out;
   gap: var(--space-md);
 }
 
@@ -36,7 +37,6 @@
   gap: var(--space-lg);
   padding: var(--space-md) var(--space-xl);
   margin-bottom: var(--space-lg);
-  animation: slideUp 0.55s ease-out;
 }
 
 .statsText {
@@ -54,7 +54,7 @@
 .progressBar {
   flex: 1;
   height: 8px;
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.04);
   border-radius: var(--radius-full);
   overflow: hidden;
 }
@@ -70,7 +70,6 @@
 .formCard {
   padding: var(--space-xl);
   margin-bottom: var(--space-lg);
-  animation: slideDown 0.3s ease-out;
 }
 
 .formTitle {
@@ -108,7 +107,7 @@
 
 .select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2394a3b8'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238b95b0'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 20px;
@@ -140,7 +139,7 @@
   gap: 2px;
   padding: var(--space-sm);
   border-radius: var(--radius-sm);
-  background: rgba(255,255,255,0.03);
+  background: rgba(255,255,255,0.02);
   border: 1px solid transparent;
   transition: all var(--transition-fast);
   cursor: pointer;
@@ -148,7 +147,7 @@
 }
 
 .presetItem:hover {
-  background: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.05);
   border-color: var(--border-glass-hover);
 }
 
@@ -175,7 +174,6 @@
   display: flex;
   gap: var(--space-sm);
   margin-bottom: var(--space-lg);
-  animation: slideUp 0.6s ease-out;
 }
 
 .filterTab {
@@ -184,20 +182,20 @@
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--text-tertiary);
-  background: rgba(255,255,255,0.03);
+  background: rgba(255,255,255,0.02);
   border: 1px solid transparent;
   transition: all var(--transition-base);
 }
 
 .filterTab:hover {
   color: var(--text-primary);
-  background: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.05);
 }
 
 .filterActive {
   color: var(--accent-purple);
   background: var(--accent-purple-dim);
-  border-color: rgba(139, 92, 246, 0.3);
+  border-color: rgba(167, 139, 250, 0.2);
 }
 
 /* ─── Tools Grid ─── */
@@ -215,12 +213,11 @@
   text-align: center;
   padding: var(--space-xl) var(--space-md);
   gap: var(--space-sm);
-  animation: slideUp 0.5s ease-out backwards;
   transition: all var(--transition-base);
 }
 
 .toolCovered {
-  border-color: rgba(16, 185, 129, 0.2);
+  border-color: rgba(52, 211, 153, 0.15);
 }
 
 .toolCovered:hover {
@@ -285,7 +282,7 @@
   font-size: 0.65rem;
   padding: 2px 10px;
   border-radius: var(--radius-full);
-  background: rgba(139, 92, 246, 0.1);
+  background: rgba(167, 139, 250, 0.08);
   color: var(--accent-purple);
   font-weight: 600;
   text-transform: uppercase;
@@ -307,16 +304,16 @@
 }
 
 .statusCovered:hover {
-  background: rgba(16, 185, 129, 0.25);
+  background: rgba(52, 211, 153, 0.2);
 }
 
 .statusRemaining {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255,255,255,0.04);
   color: var(--text-tertiary);
 }
 
 .statusRemaining:hover {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.08);
   color: var(--text-primary);
 }
 
@@ -324,7 +321,6 @@
 .emptyState {
   text-align: center;
   padding: var(--space-3xl);
-  animation: fadeIn 0.5s ease-out;
 }
 
 .emptyIcon {

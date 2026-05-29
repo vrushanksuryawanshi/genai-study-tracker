@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ProtectedLayout from '@/components/ProtectedLayout';
 import styles from './page.module.css';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 
 const CATEGORIES = [
   'AI/ML',
@@ -48,8 +50,36 @@ export default function ToolsPage() {
     category: 'AI/ML',
     logo_url: '',
     status: 'remaining',
+    hours_required: 0,
   });
   const [submitting, setSubmitting] = useState(false);
+  const containerRef = useRef(null);
+
+  useGSAP(() => {
+    if (!loading) {
+      const tl = gsap.timeline();
+      
+      tl.fromTo(`.${styles.header}`, 
+        { y: -30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" }
+      )
+      .fromTo(`.${styles.statsBar}`, 
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }, 
+        "-=0.4"
+      )
+      .fromTo(`.${styles.filterTabs}`, 
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 
+        "-=0.3"
+      )
+      .fromTo(`.${styles.toolCard}`, 
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, stagger: 0.05, ease: "back.out(1.2)" }, 
+        "-=0.2"
+      );
+    }
+  }, { dependencies: [loading, filter], scope: containerRef });
 
   useEffect(() => {
     fetchTools();
@@ -81,7 +111,7 @@ export default function ToolsPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        setFormData({ name: '', category: 'AI/ML', logo_url: '', status: 'remaining' });
+        setFormData({ name: '', category: 'AI/ML', logo_url: '', status: 'remaining', hours_required: 0 });
         setShowForm(false);
         fetchTools();
       } else {
@@ -112,6 +142,39 @@ export default function ToolsPage() {
     }
   };
 
+  const handleFileUpload = (e, tool) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Check file size (limit to ~1MB to avoid massive payloads)
+    if (file.size > 1024 * 1024) {
+      alert("File is too large. Please use an image under 1MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const dataUrl = event.target.result;
+      try {
+        const res = await fetch(`/api/tools/${tool.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ logo_url: dataUrl }),
+        });
+        if (res.ok) {
+          setTools((prev) =>
+            prev.map((t) => (t.id === tool.id ? { ...t, logo_url: dataUrl } : t))
+          );
+        } else {
+          alert('Failed to update logo. Payload might be too large.');
+        }
+      } catch (err) {
+        console.error('Failed to update logo:', err);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const deleteTool = async (id) => {
     if (!confirm('Delete this tool?')) return;
     try {
@@ -137,10 +200,13 @@ export default function ToolsPage() {
 
   const coveredCount = tools.filter((t) => t.status === 'covered').length;
   const progressPercent = tools.length > 0 ? (coveredCount / tools.length) * 100 : 0;
+  
+  const hoursCompleted = tools.filter((t) => t.status === 'covered').reduce((sum, t) => sum + Number(t.hours_required || 0), 0);
+  const hoursPlanned = tools.filter((t) => t.status === 'remaining').reduce((sum, t) => sum + Number(t.hours_required || 0), 0);
 
   return (
     <ProtectedLayout activePage="tools">
-      <div className={styles.page}>
+      <div className={styles.page} ref={containerRef}>
         <div className={styles.header}>
           <div>
             <h1 className={styles.title}>
@@ -159,16 +225,26 @@ export default function ToolsPage() {
         </div>
 
         {/* Stats Bar */}
-        <div className={`glass-card ${styles.statsBar}`}>
-          <div className={styles.statsText}>
-            <span className={styles.statsHighlight}>{coveredCount}</span> of{' '}
-            <span className={styles.statsHighlight}>{tools.length}</span> tools covered
+        <div className={`glass-card ${styles.statsBar}`} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+          <div>
+            <div className={styles.statsText}>
+              <span className={styles.statsHighlight}>{coveredCount}</span> of{' '}
+              <span className={styles.statsHighlight}>{tools.length}</span> tools covered
+            </div>
+            <div className={styles.progressBar} style={{marginTop: '10px'}}>
+              <div
+                className={styles.progressFill}
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
           </div>
-          <div className={styles.progressBar}>
-            <div
-              className={styles.progressFill}
-              style={{ width: `${progressPercent}%` }}
-            />
+          <div style={{textAlign: 'right'}}>
+            <div className={styles.statsText} style={{fontSize: '0.9rem'}}>
+              <span className={styles.statsHighlight}>{hoursCompleted}</span> hrs ({(hoursCompleted / 3).toFixed(1)} days) completed
+            </div>
+            <div className={styles.statsText} style={{fontSize: '0.9rem'}}>
+              <span className={styles.statsHighlight}>{hoursPlanned}</span> hrs ({(hoursPlanned / 3).toFixed(1)} days) planned
+            </div>
           </div>
         </div>
 
@@ -209,17 +285,36 @@ export default function ToolsPage() {
                 </div>
               </div>
 
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Logo URL</label>
-                <input
-                  type="url"
-                  value={formData.logo_url}
-                  onChange={(e) =>
-                    setFormData((prev) => ({ ...prev, logo_url: e.target.value }))
-                  }
-                  placeholder="https://example.com/logo.svg"
-                  className="input-field"
-                />
+              <div className={styles.formRow}>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Logo URL</label>
+                  <input
+                    type="url"
+                    value={formData.logo_url}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, logo_url: e.target.value }))
+                    }
+                    placeholder="https://example.com/logo.svg"
+                    className="input-field"
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.formLabel}>Hours Required</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.5"
+                    value={formData.hours_required}
+                    onChange={(e) =>
+                      setFormData((prev) => ({ ...prev, hours_required: e.target.value }))
+                    }
+                    placeholder="e.g. 6"
+                    className="input-field"
+                  />
+                  {formData.hours_required > 0 && (
+                    <span className={styles.daysHint}>≈ {(formData.hours_required / 3).toFixed(1)} days</span>
+                  )}
+                </div>
               </div>
 
               {/* Preset Logos */}
@@ -287,7 +382,6 @@ export default function ToolsPage() {
               <div
                 key={tool.id}
                 className={`glass-card ${styles.toolCard} ${tool.status === 'covered' ? styles.toolCovered : ''}`}
-                style={{ animationDelay: `${idx * 0.05}s` }}
               >
                 <button
                   onClick={() => deleteTool(tool.id)}
@@ -296,27 +390,57 @@ export default function ToolsPage() {
                 >
                   ✕
                 </button>
-                <div className={styles.toolLogo}>
-                  {tool.logo_url ? (
-                    <img
-                      src={tool.logo_url}
-                      alt={tool.name}
-                      className={styles.logoImg}
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'flex';
-                      }}
+                <div className={styles.toolLogo} style={{ position: 'relative' }}>
+                  <label style={{ cursor: 'pointer', display: 'flex', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }} title="Upload new icon">
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      style={{ display: 'none' }} 
+                      onChange={(e) => handleFileUpload(e, tool)}
                     />
-                  ) : null}
-                  <span
-                    className={styles.logoFallback}
-                    style={tool.logo_url ? { display: 'none' } : {}}
-                  >
-                    🔧
-                  </span>
+                    {tool.logo_url ? (
+                      <img
+                        src={tool.logo_url}
+                        alt={tool.name}
+                        className={styles.logoImg}
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                    ) : null}
+                    <span
+                      className={styles.logoFallback}
+                      style={tool.logo_url ? { display: 'none' } : {}}
+                    >
+                      🔧
+                    </span>
+                    <div style={{
+                      position: 'absolute',
+                      bottom: -8,
+                      right: -8,
+                      background: 'var(--accent-purple)',
+                      borderRadius: '50%',
+                      padding: '4px',
+                      fontSize: '10px',
+                      width: '20px',
+                      height: '20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                    }}>
+                      ✏️
+                    </div>
+                  </label>
                 </div>
                 <h4 className={styles.toolName}>{tool.name}</h4>
-                <span className={styles.toolCategory}>{tool.category}</span>
+                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                  <span className={styles.toolCategory}>{tool.category}</span>
+                  {tool.hours_required > 0 && (
+                    <span className={styles.toolHours}>{tool.hours_required} hrs ({(tool.hours_required / 3).toFixed(1)} days)</span>
+                  )}
+                </div>
                 <button
                   onClick={() => toggleStatus(tool)}
                   className={`${styles.statusToggle} ${tool.status === 'covered' ? styles.statusCovered : styles.statusRemaining}`}
